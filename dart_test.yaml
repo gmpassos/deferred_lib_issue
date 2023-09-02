@@ -1,0 +1,6 @@
+
+timeout: 3x
+
+concurrency: 1
+
+platforms: [chrome]
