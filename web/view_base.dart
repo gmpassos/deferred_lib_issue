@@ -23,14 +23,25 @@ abstract class ViewBase {
   }
 
   FutureOr<bool> refresh() {
+    print('>> REFRESHING...');
+
     var prevContent = _content;
-    if (prevContent == null) return false;
+    if (prevContent == null) {
+      print('REFRESH[abort]> null _content');
+      return false;
+    }
 
     var parent = prevContent.parent;
-    if (parent == null) return false;
+    if (parent == null) {
+      print('REFRESH[abort]> null parent');
+      return false;
+    }
 
     var idx = parent.children.indexOf(prevContent);
-    if (idx < 0) return false;
+    if (idx < 0) {
+      print('REFRESH[abort]> not in parent');
+      return false;
+    }
 
     prevContent.remove();
 
@@ -40,11 +51,13 @@ abstract class ViewBase {
       return build.then((c) {
         _content = c;
         parent.children.insert(idx, c);
+        print('>> REFRESH[async] FINISHED');
         return true;
       });
     } else {
       _content = build;
       parent.children.insert(idx, build);
+      print('>> REFRESH[sync] FINISHED');
       return true;
     }
   }
@@ -52,7 +65,14 @@ abstract class ViewBase {
 
 class MainView extends ViewBase {
   MainView() {
-    window.onHashChange.listen((_) => refresh());
+    window.onHashChange.listen(_onHashChange);
+  }
+
+  void _onHashChange(event) {
+    var hash = window.location.hash;
+    print(">> ON HASH CHANGE> hash: $hash");
+    var ret = refresh();
+    print("-- ON HASH CHANGE> `refresh()` return: $ret");
   }
 
   String get hash => window.location.hash;
@@ -96,12 +116,17 @@ class MainView extends ViewBase {
 
       return view_deferred.loadLibrary().then((_) {
         div.children.add(view_deferred.ViewExtra().content());
+        _updateBuiltHash();
         return div;
       });
     }
 
-    _builtHash = hash;
-
+    _updateBuiltHash();
     return div;
+  }
+
+  void _updateBuiltHash() {
+    _builtHash = hash;
+    print('>> BUILT HASH: $_builtHash');
   }
 }

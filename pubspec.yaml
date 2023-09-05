@@ -1,6 +1,6 @@
 name: deferred_lib_issue
 description: An absolute bare-bones web app.
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/gmpassos/deferred_lib_issue
 publish_to: none
 

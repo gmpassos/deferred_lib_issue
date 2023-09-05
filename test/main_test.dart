@@ -20,12 +20,14 @@ void main() {
 
     // This change works.
     await setLocationHash('foo');
+    expect(window.location.hash, equals('#foo'));
     expect(mainView.builtHash, equals('#foo'));
     expect(documentElement.text, contains('HASH: #foo'));
 
     // This change crashes, since it will call
     // `view_deferred.loadLibrary()`
     await setLocationHash('extra');
+    expect(window.location.hash, equals('#extra'));
     expect(mainView.builtHash, equals('#extra'));
     expect(documentElement.text, contains('HASH: #extra'));
   });

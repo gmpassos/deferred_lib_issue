@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
@@ -27,9 +26,8 @@ jobs:
         run: dart analyze --fatal-infos --fatal-warnings .
 
 
-  test_chrome:
+  test_chrome_normal:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
@@ -43,3 +41,19 @@ jobs:
         run: dart pub upgrade
       - name: Run tests (Chrome)
         run: dart test --platform chrome
+
+  test_chrome_disable_program_split:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+      - name: Dart version
+        run: |
+          dart --version
+          uname -a
+      - name: Install dependencies
+        run: dart pub get
+      - name: Upgrade dependencies
+        run: dart pub upgrade
+      - name: Run tests (Chrome)
+        run: dart test --platform chrome --dart2js-args="--disable-program-split"
